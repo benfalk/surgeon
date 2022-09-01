@@ -9,6 +9,7 @@ module Surgeon
     # @param label [#to_s] optional label
     def initialize(label = nil)
       @label = label&.to_s
+      @tracking = false
       @data = []
     end
 
@@ -17,16 +18,11 @@ module Surgeon
     # this can function as a simple call counter or also keep track
     # of total running time of a provided block as well
     #
-    def track
-      if block_given?
-        result = nil
-        time = Benchmark.measure { result = yield }
-        @data << time.real
-        result
-      else
-        @data << 0
-        nil
-      end
+    def track(&block)
+      return increment_count unless block_given?
+      return increment_track(&block) if @tracking
+
+      start_track(&block)
     end
 
     # Number of times track has been called
@@ -43,6 +39,27 @@ module Surgeon
     #
     def total_time
       @data.sum
+    end
+
+    private
+
+    def increment_count
+      @data << 0
+      nil
+    end
+
+    def increment_track(&block)
+      @data << 0
+      block.call
+    end
+
+    def start_track(&block)
+      @tracking = true
+      result = nil
+      time = Benchmark.measure { result = block.call }
+      @data << time.real
+      @tracking = false
+      result
     end
   end
 end

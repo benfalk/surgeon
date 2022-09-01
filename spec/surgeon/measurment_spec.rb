@@ -39,4 +39,39 @@ RSpec.describe Surgeon::Measurement do
       expect(subject.total_time).to be > 0
     end
   end
+
+  context 'recursive calls of itself' do
+    let(:klass) do
+      Class.new do
+        attr_reader :measurement
+
+        def initialize
+          @measurement = Surgeon::Measurement.new
+        end
+
+        def rolling_sum(number, total = 0)
+          @measurement.track do
+            return total if number.zero?
+
+            rolling_sum(number - 1, total + number)
+          end
+        end
+      end
+    end
+
+    let(:counter) { klass.new }
+    let(:measurement) { counter.measurement }
+    let(:data) { measurement.instance_variable_get(:@data) }
+
+    it 'correctly counts the calls and records outer time' do
+      expect(counter.rolling_sum(3)).to eq(6)
+      expect(measurement.count).to eq(4)
+      expect(measurement.total_time).to be > 0
+
+      # Peeking into data to make sure only the outer most call
+      # has time recorded for it
+      expect(data.last).to be > 0
+      expect(data[0..2]).to all(be_zero)
+    end
+  end
 end
