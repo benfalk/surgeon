@@ -5,6 +5,7 @@ require 'forwardable'
 require_relative 'surgeon/version'
 require_relative 'surgeon/measurement'
 require_relative 'surgeon/measurement_set'
+require_relative 'surgeon/method_tracker'
 require_relative 'surgeon/session'
 require_relative 'surgeon/simple_report'
 
@@ -30,6 +31,20 @@ module Surgeon
     # @param label [Symbol]
     def track(label, &block)
       session.track(label, &block)
+    end
+
+    # Track Method
+    #
+    # This is the preferred way to measure a whole method call
+    # if you want to measure the whole thing w/o wanting to
+    # modify the source to do so.
+    #
+    # @param klass [Class]
+    # @param method [Symbol]
+    # @return [Symbol]
+    def track_method!(klass, method)
+      MethodTracker.new(klass, method, self).attach!
+      method
     end
 
     # @return [String]

@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'surgeon'
+
+# A simple greetings maker
+class Greeter
+  def hello(name)
+    "hello #{name}"
+  end
+end
+
+Surgeon.track_method!(Greeter, :hello)
+Surgeon.prepare_for_surgery!
+
+greater = Greeter.new
+raise 'hell' unless greater.hello('Mark') == 'hello Mark'
+raise 'hell' unless greater.hello('Sarah') == 'hello Sarah'
+
+puts Surgeon.report

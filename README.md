@@ -29,3 +29,29 @@ puts Surgeon.report
 #       some_math: (0001) (0.000002)
 #  some_code_area: (0002)
 ```
+
+## Additional Tracking Helpers
+
+### Track Whole Methods
+
+Instead of wrapping a whole method body with a `track` block
+you can instead use `Surgeon.track_method!`
+
+```ruby
+class Greeter
+  def hello(name)
+    "hello #{name}"
+  end
+end
+
+Surgeon.track_method!(Greeter, :hello)
+Surgeon.prepare_for_surgery!
+
+greater = Greeter.new
+greater.hello('Mark') == 'hello Mark'
+greater.hello('Sarah') == 'hello Sarah'
+
+puts Surgeon.report
+# Surgeon's Report:
+#   Greeter#hello: (0002) (0.000007)
+```
