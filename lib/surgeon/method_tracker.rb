@@ -16,27 +16,46 @@ module Surgeon
       @attached = false
     end
 
+    # Attach Tracking
+    #
+    # By default a method tracker doesn't attach to and track
+    # calls.  This method attaches tracking to the calls and
+    # returns true if it attached or false it was already attached
+    #
+    # @return [Boolean]
+    #
     def attach!
-      return if @attached
+      return false if @attached
 
       # Have to bind these to local variables so they will
       # carry down into the define_method block
       tracker, tag, measured_method = tracker_tag_and_measured_method
 
-      @attached = true
       @klass.alias_method(@measured_method, @method)
       @klass.define_method(@method) do |*args, **opts, &block|
         tracker.track(tag) do
           send(measured_method, *args, **opts, &block)
         end
       end
+
+      @attached = true
     end
 
+    # Detach Tracking
+    #
+    # If you are dynamically attaching trackers and need to remove
+    # some `detach!` will remove tracking to it's assigned function.
+    # Returns true if it was attached or false otherwise.
+    #
+    # @return [Boolean]
+    #
     def detach!
-      return unless @attached
+      return false unless @attached
 
       @attached = false
       @klass.alias_method(@method, @measured_method)
+
+      true
     end
 
     private

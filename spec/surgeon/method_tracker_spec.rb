@@ -31,19 +31,21 @@ RSpec.describe Surgeon::MethodTracker do
   end
 
   it 'tracks when attached' do
-    instance.attach!
+    expect(instance.attach!).to be(true)
+    expect(instance.attach!).to be(false)
     expect(object.dink_around).to eq(42)
     expect(session.measurements).to be_any
     expect(measurement.count).to eq(1)
   end
 
   it 'can track attached and then be detached' do
-    instance.attach!
+    expect(instance.attach!).to be(true)
     expect(object.dink_around).to eq(42)
     expect(session.measurements).to be_any
     expect(measurement.count).to eq(1)
     expect(object.dink_around).to eq(42)
-    instance.detach!
+    expect(instance.detach!).to be(true)
+    expect(instance.detach!).to be(false)
     expect(object.dink_around).to eq(42)
     expect(measurement.count).to eq(2)
   end
