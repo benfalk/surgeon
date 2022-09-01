@@ -1,0 +1,9 @@
+Metrics/BlockLength:
+  IgnoredMethods: ['describe', 'it', 'context']
+
+Lint/ConstantDefinitionInBlock:
+  AllowedMethods: ['describe', 'it']
+
+AllCops:
+  SuggestExtensions: false
+  NewCops: enable
