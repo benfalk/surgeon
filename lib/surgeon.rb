@@ -29,6 +29,8 @@ module Surgeon
     # otherwise it returns nil
     #
     # @param label [Symbol]
+    # @return [Object, nil]
+    #
     def track(label, &block)
       session.track(label, &block)
     end
@@ -42,12 +44,26 @@ module Surgeon
     # @param klass [Class]
     # @param method [Symbol]
     # @return [Symbol]
+    #
     def track_method!(klass, method)
       MethodTracker.new(klass, method, self).attach!
       method
     end
 
+    # Track Initialize
+    #
+    # @param klass [Class]
+    # @return [nil]
+    #
+    def track_init!(klass)
+      MethodTracker.new(klass, :initialize, self).attach!
+      nil
+    end
+
+    # Simple Report
+    #
     # @return [String]
+    #
     def report
       SimpleReport.new(session.measurements).to_s
     end

@@ -35,7 +35,7 @@ puts Surgeon.report
 ### Track Whole Methods
 
 Instead of wrapping a whole method body with a `track` block
-you can instead use `Surgeon.track_method!`
+you can instead use `Surgeon.track_method!` and `Surgeon.track_init!`
 
 ```ruby
 class Greeter
@@ -44,6 +44,8 @@ class Greeter
   end
 end
 
+# Ergonomic for Surgeon.track_method!(Greeter, :initialize)
+Surgeon.track_init!(Greeter)
 Surgeon.track_method!(Greeter, :hello)
 Surgeon.prepare_for_surgery!
 
@@ -53,5 +55,6 @@ greater.hello('Sarah') == 'hello Sarah'
 
 puts Surgeon.report
 # Surgeon's Report:
-#   Greeter#hello: (0002) (0.000007)
+#        Greeter#hello: (0002) (0.000007)
+#   Greeter#initialize: (0001) (0.000002)
 ```

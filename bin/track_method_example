@@ -11,6 +11,7 @@ class Greeter
   end
 end
 
+Surgeon.track_init!(Greeter)
 Surgeon.track_method!(Greeter, :hello)
 Surgeon.prepare_for_surgery!
 
