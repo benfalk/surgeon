@@ -13,7 +13,7 @@ gem 'surgeon', git: 'https://github.com/benfalk/surgeon.git'
 ## How to Use
 
 ```ruby
-# Clears all measurements that have been made
+# Clears all data that has been recorded and prepares for a new surgery
 Surgeon.prepare_for_surgery!
 
 # Track counts to code paths
@@ -23,6 +23,14 @@ Surgeon.track(:some_code_area)
 # Count and measure time
 result = Surgeon.track(:some_math) { 14 * 3 }
 result == 42
+
+while result > 13
+  # run this debug only one time; handy when you want to
+  # check into something once time w/o constantly stopping
+  # on it every iteration
+  Surgeon.run_once(:inspect_result_loop) { binding.pry }
+  result -= 1
+end
 
 puts Surgeon.report
 # Surgeon's Report:

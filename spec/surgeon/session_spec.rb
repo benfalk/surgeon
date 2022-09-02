@@ -10,4 +10,21 @@ RSpec.describe Surgeon::Session do
     expect(subject.track(:foo) { :bar }).to eq(:bar)
     expect(subject.measurements.measurement(:foo).count).to eq(1)
   end
+
+  it 'can run a block of code once' do
+    count = 0
+    subject.run_once { count += 1 }
+    subject.run_once { count += 1 }
+    expect(count).to eq(1)
+  end
+
+  it 'can run a block of code once under a label' do
+    count = 0
+    subject.run_once(:inc) { count += 1 }
+    subject.run_once(:inc) { count += 1 }
+    subject.run_once(:dec) { count -= 1 }
+    subject.run_once(:dec) { count -= 1 }
+    subject.run_once(:dec) { count -= 1 }
+    expect(count).to eq(0)
+  end
 end

@@ -3,11 +3,13 @@
 require 'benchmark'
 require 'forwardable'
 require_relative 'surgeon/version'
+require_relative 'surgeon/limited_logic'
 require_relative 'surgeon/measurement'
 require_relative 'surgeon/measurement_set'
 require_relative 'surgeon/method_tracker'
 require_relative 'surgeon/session'
 require_relative 'surgeon/simple_report'
+require_relative 'surgeon/tagged_objects'
 
 # A singleton debugger aid
 module Surgeon
@@ -58,6 +60,20 @@ module Surgeon
     def track_init!(klass)
       MethodTracker.new(klass, :initialize, self).attach!
       nil
+    end
+
+    # Run Once
+    #
+    # Sometimes you want to run a block of code in a loop
+    # just once to have an understanding of some state or
+    # to make a slight modificaiton to it to observe.  This
+    # allows for labeled sets of code to only run once.
+    #
+    # @param label [Symbol]
+    # @return [:limit_exceeded, Object]
+    #
+    def run_once(label = :global_surgeons_label, &block)
+      session.run_once(label, &block)
     end
 
     # Simple Report
